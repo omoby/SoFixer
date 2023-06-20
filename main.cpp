@@ -12,26 +12,27 @@
 #endif
 
 
-const char* short_options = "hdm:s:o:b:";
+const char *short_options = "hdm:s:o:b:";
 const struct option long_options[] = {
-        {"help", 0, NULL, 'h'},
-        {"debug", 0, NULL, 'd'},
-        {"memso", 1, NULL, 'm'},
-        {"source", 1, NULL, 's'},
-        {"baseso", 1, NULL, 'b'},
-        {"output", 1, NULL, 'o'},
-        {nullptr, 0, nullptr, 0}
+        {"help",   0, NULL,    'h'},
+        {"debug",  0, NULL,    'd'},
+        {"memso",  1, NULL,    'm'},
+        {"source", 1, NULL,    's'},
+        {"baseso", 1, NULL,    'b'},
+        {"output", 1, NULL,    'o'},
+        {nullptr,  0, nullptr, 0}
 };
+
 void useage();
 
 
-bool main_loop(int argc, char* argv[]) {
+bool main_loop(int argc, char *argv[]) {
     int c;
 
     ObElfReader elf_reader;
 
     std::string source, output, baseso;
-    while((c = getopt_long(argc, argv, short_options, long_options, nullptr)) != -1) {
+    while ((c = getopt_long(argc, argv, short_options, long_options, nullptr)) != -1) {
         switch (c) {
             case 'd':
                 FLOGI("Use debug mode");
@@ -46,22 +47,22 @@ bool main_loop(int argc, char* argv[]) {
                 baseso = optarg;
                 break;
             case 'm': {
-                auto is16Bit = [](const char* c) {
+                auto is16Bit = [](const char *c) {
                     auto len = strlen(c);
-                    if(len > 2) {
-                        if(c[0] == '0' & c[1] == 'x') return true;
+                    if (len > 2) {
+                        if (c[0] == '0' & c[1] == 'x') return true;
                     }
                     bool is10bit = true;
-                    for(auto i = 0; i < len; i++) {
-                        if((c[i] > 'a' && c[i] < 'f') ||
-                           (c[i] > 'A' && c[i] < 'F')) {
+                    for (auto i = 0; i < len; i++) {
+                        if ((c[i] > 'a' && c[i] < 'f') ||
+                            (c[i] > 'A' && c[i] < 'F')) {
                             is10bit = false;
                         }
                     }
                     return !is10bit;
                 };
 #ifndef __SO64__
-                auto base = strtoul(optarg, 0, is16Bit(optarg) ? 16: 10);
+                auto base = strtoul(optarg, 0, is16Bit(optarg) ? 16 : 10);
 #else
                 auto base = strtoull(optarg, 0, is16Bit(optarg) ? 16: 10);
 #endif
@@ -74,7 +75,7 @@ bool main_loop(int argc, char* argv[]) {
     }
 
     auto file = fopen(source.c_str(), "rb");
-    if(nullptr == file) {
+    if (nullptr == file) {
         FLOGE("source so file cannot found!!!");
         return false;
     }
@@ -93,13 +94,13 @@ bool main_loop(int argc, char* argv[]) {
         elf_reader.setBaseSoName(baseso.c_str());
     }
 
-    if(!elf_reader.Load()) {
+    if (!elf_reader.Load()) {
         FLOGE("source so file is invalid");
         return false;
     }
 
     ElfRebuilder elf_rebuilder(&elf_reader);
-    if(!elf_rebuilder.Rebuild()) {
+    if (!elf_rebuilder.Rebuild()) {
         FLOGE("error occured in rebuilding elf file");
         return false;
     }
@@ -107,23 +108,25 @@ bool main_loop(int argc, char* argv[]) {
 
     if (!output.empty()) {
         file = fopen(output.c_str(), "wb+");
-        if(nullptr == file) {
+        if (nullptr == file) {
             FLOGE("output so file cannot write !!!");
             return false;
         }
-        fwrite(elf_rebuilder.getRebuildData(), 1, elf_rebuilder.getRebuildSize(),  file);
+        fwrite(elf_rebuilder.getRebuildData(), 1, elf_rebuilder.getRebuildSize(), file);
         fclose(file);
     }
 
     return true;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     if (main_loop(argc, argv)) {
         FLOGI("Done!!!");
         return 0;
     }
     useage();
+
+
     return -1;
 }
 

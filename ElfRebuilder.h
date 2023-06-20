@@ -15,15 +15,14 @@
 #include "ObElfReader.h"
 
 
-
 #define SOINFO_NAME_LEN 128
 struct soinfo {
 public:
-    const char* name = "name";
-    const Elf_Phdr* phdr = nullptr;
+    const char *name = "name";
+    const Elf_Phdr *phdr = nullptr;
     size_t phnum = 0;
     Elf_Addr entry = 0;
-    uint8_t * base = 0;
+    uint8_t *base = 0;
     unsigned size = 0;
 
     Elf_Addr min_load;
@@ -31,7 +30,7 @@ public:
 
     uint32_t unused1 = 0;  // DO NOT USE, maintained for compatibility.
 
-    Elf_Dyn* dynamic = nullptr;
+    Elf_Dyn *dynamic = nullptr;
     size_t dynamic_count = 0;
     Elf_Word dynamic_flags = 0;
 
@@ -40,40 +39,40 @@ public:
 
     unsigned flags = 0;
 
-    const char* strtab = nullptr;
-    Elf_Sym* symtab = nullptr;
+    const char *strtab = nullptr;
+    Elf_Sym *symtab = nullptr;
 
-    uint8_t * hash = 0;
+    uint8_t *hash = 0;
     size_t strtabsize = 0;
     size_t nbucket = 0;
     size_t nchain = 0;
-    unsigned* bucket = nullptr;
-    unsigned* chain = nullptr;
+    unsigned *bucket = nullptr;
+    unsigned *chain = nullptr;
 
-    Elf_Addr * plt_got = nullptr;
+    Elf_Addr *plt_got = nullptr;
 
     uint32_t plt_type = DT_REL;
-    Elf_Rel* plt_rel = nullptr;
+    Elf_Rel *plt_rel = nullptr;
     size_t plt_rel_count = 0;
-    Elf_Rela* plt_rela = nullptr;
+    Elf_Rela *plt_rela = nullptr;
     size_t plt_rela_count = 0;
 
-    Elf_Rel* rel = nullptr;
+    Elf_Rel *rel = nullptr;
     size_t rel_count = 0;
 
-    void* preinit_array = nullptr;
+    void *preinit_array = nullptr;
     size_t preinit_array_count = 0;
 
-    void** init_array = nullptr;
+    void **init_array = nullptr;
     size_t init_array_count = 0;
-    void** fini_array = nullptr;
+    void **fini_array = nullptr;
     size_t fini_array_count = 0;
 
-    void* init_func = nullptr;
-    void* fini_func = nullptr;
+    void *init_func = nullptr;
+    void *fini_func = nullptr;
 
     // ARM EABI section used for stack unwinding.
-    Elf_Addr * ARM_exidx = nullptr;
+    Elf_Addr *ARM_exidx = nullptr;
     size_t ARM_exidx_count = 0;
     unsigned mips_symtabno = 0;
     unsigned mips_local_gotno = 0;
@@ -81,7 +80,7 @@ public:
 
     // When you read a virtual address from the ELF file, add this
     // value to get the corresponding address in the process' address space.
-    uint8_t * load_bias = nullptr;
+    uint8_t *load_bias = nullptr;
 
     bool has_text_relocations = false;
     bool has_DT_SYMBOLIC = false;
@@ -90,26 +89,35 @@ public:
 
 class ElfRebuilder {
 public:
-    ElfRebuilder(ObElfReader* elf_reader);
-    ~ElfRebuilder() { if(rebuild_data != nullptr) delete []rebuild_data; }
+    ElfRebuilder(ObElfReader *elf_reader);
+
+    ~ElfRebuilder() { if (rebuild_data != nullptr) delete[]rebuild_data; }
+
     bool Rebuild();
 
-    void* getRebuildData() { return rebuild_data; }
+    void *getRebuildData() { return rebuild_data; }
+
     size_t getRebuildSize() { return rebuild_size; }
+
 private:
     bool RebuildPhdr();
+
     bool RebuildShdr();
+
     bool ReadSoInfo();
+
     bool RebuildRelocs();
+
     bool RebuildFin();
 
-  template <bool isRela>
-  void relocate(uint8_t * base, Elf_Rel* rel, Elf_Addr dump_base);
-    ObElfReader* elf_reader_;
+    template<bool isRela>
+    void relocate(uint8_t *base, Elf_Rel *rel, Elf_Addr dump_base);
+
+    ObElfReader *elf_reader_;
     soinfo si;
 
     int rebuild_size = 0;
-    uint8_t * rebuild_data = nullptr;
+    uint8_t *rebuild_data = nullptr;
 
     Elf_Word sDYNSYM = 0;
     Elf_Word sDYNSTR = 0;
@@ -131,7 +139,7 @@ private:
     std::vector<Elf_Shdr> shdrs;
     std::string shstrtab;
 
-  unsigned external_pointer = 0;
+    unsigned external_pointer = 0;
 private:
     bool isPatchInit = false;
 public:

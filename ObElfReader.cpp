@@ -124,7 +124,7 @@ bool ObElfReader::LoadDynamicSectionFromBaseSource() {
     const Elf_Phdr * phdr;
 
     for (phdr = phdr_table_; phdr < phdr_limit; phdr++) {
-        if (phdr->p_type != PT_DYNAMIC) {
+        if (phdr->p_type != PT_DYNAMIC) { //https://zhuanlan.zhihu.com/p/54399161
             continue;
         }
 

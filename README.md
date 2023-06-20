@@ -9,7 +9,7 @@ make
 ```
 
 ## 使用方法
-* 從so中dump內存， ida腳本
+* 從so中dump內存， ida脚本
 ```$cpp
 import idaapi
 start_address = 0x0000007DB078B000
@@ -31,8 +31,8 @@ fp.close()
 * 执行修复
 ```$cpp
 sofixer  -s soruce.so -o fix.so -m 0x0 -d 
--s 待修復的so路徑
--o 修復後的so路徑
+-s 待修复的so路径
+-o 修复后的so路径
 -m 內存dump的基地址(16位) 0xABC
 -d 輸出debug信息
 ```
@@ -47,3 +47,6 @@ TK so修复参考[http://bbs.pediy.com/thread-191649.htm]
 ## 已知问题
 在解析重定位表的时候有几个地方写错了，暂时懒得改，估计够用了，等出现新的修复so的
 理论的时候再一并更新吧
+
+## elf基本结构
+https://blog.csdn.net/kunkliu/article/details/129648744

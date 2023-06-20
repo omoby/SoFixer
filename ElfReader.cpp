@@ -287,7 +287,7 @@ bool ElfReader::ReserveAddressSpace(uint32_t padding_size) {
 // reserve the address space range for the library.
 // TODO: assert assumption.
 bool ElfReader::LoadSegments() {
-    // TODO fix file dada load error, file data between LOAD seg should be loaded
+    // TODO fix file data load error, file data between LOAD seg should be loaded
     for (size_t i = 0; i < phdr_num_; ++i) {
         const Elf_Phdr* phdr = &phdr_table_[i];
 
@@ -510,7 +510,7 @@ phdr_table_protect_gnu_relro(const Elf_Phdr* phdr_table,
  *   arm_exidx       -> address of table in memory (NULL on failure).
  *   arm_exidx_count -> number of items in table (0 on failure).
  * Return:
- *   0 on error, -1 on failure (_no_ error code in errno)
+ *   0 on success, -1 on failure (_no_ error code in errno)
  */
 int
 phdr_table_get_arm_exidx(const Elf_Phdr* phdr_table,
